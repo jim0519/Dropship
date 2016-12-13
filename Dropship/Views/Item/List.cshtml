@@ -1,0 +1,295 @@
+﻿@model ItemListViewModel
+@{
+    ViewBag.Title = "List";
+}
+
+<h2>List</h2>
+
+@using (Html.BeginForm())
+{
+    <div style="border-bottom: 1px dotted #998675;margin-top: 30px;margin-bottom: 10px;height: 35px;">
+        <div style="float:left; font-size:x-large;color:brown;">Search Criteria</div>
+        <div id="divOperationBtn" style="float:right">
+            @*<input type="button" id="btnFixInfo" class="k-button" value="Fix Item Info" />*@
+            <input type="button" id="btnUpdateItem" class="k-button" value="Update Item Info" />
+            <img id="imgLoading" src="~/Content/images/loading.gif" style="display:none;" />
+            <script>
+    $(document).ready(function () {
+
+        $('#btnUpdateItem').click(function (e) {
+            var link = '@Url.Action("UpdateLocalItem", "Item")';
+            var postData = {
+                //ListingChannelID: 1
+            }
+            $.ajax({
+                url: link,
+                type: "POST",
+                //contentType: "application/json; charset=utf-8",
+                data: postData,
+                dataType: "json",
+                beforeSend: function () {
+                    $("#imgLoading").show();
+                },
+                complete: function () {
+                    $("#imgLoading").hide();
+                },
+                success: function (data) {
+                    if (data.Result) {
+                        alert("Update Local Item Success");
+                    }
+                    else {
+                        alert("Update Local Item Failed");
+                    }
+                },
+                error: function (data) {
+                    //debugger;
+                    alert("error");
+                }
+            });
+            return false;
+        });
+
+
+        $('#btnFixInfo').click(function (e) {
+            var link = '@Url.Action("FixInfo", "Item")';
+            var postData = {
+                //ListingChannelID: 1
+            }
+            $.ajax({
+                url: link,
+                type: "POST",
+                //contentType: "application/json; charset=utf-8",
+                data: postData,
+                dataType: "json",
+                beforeSend: function () {
+                    $("#imgLoading").show();
+                },
+                complete: function () {
+                    $("#imgLoading").hide();
+                },
+                success: function (data) {
+                    if (data.Result) {
+                        alert("Fix Info Success");
+                    }
+                    else {
+                        alert("Fix Info Failed");
+                    }
+                },
+                error: function (data) {
+                    //debugger;
+                    alert("error");
+                }
+            });
+            return false;
+        });
+
+    });
+
+            </script>
+
+        </div>
+    </div>
+
+    <table class="adminContent">
+        <tr>
+            <td>
+                <div id="item-grid"></div>
+
+                <script>
+                    $(document).ready(function () {
+                        $("#item-grid").kendoGrid({
+                            dataSource: {
+                                type: "json",
+                                transport: {
+                                    read: {
+                                        url: "@Html.Raw(Url.Action("List", "Item"))",
+                                        type: "POST",
+                                        dataType: "json",
+                                        data: additionalData
+                                    }
+                                },
+                                schema: {
+                                    data: "Data",
+                                    total: "Total",
+                                    errors: "Errors"
+                                },
+                                error: function (e) {
+                                    display_kendoui_grid_error(e);
+                                    // Cancel the changes
+                                    this.cancelChanges();
+                                },
+                                pageSize: "50",
+                                serverPaging: true,
+                                serverFiltering: true,
+                                serverSorting: true
+                            },
+                            pageable: {
+                                refresh: true,
+                                pageSizes: ["20", "50", "100"]
+                            },
+                            editable: {
+                                confirmation: false,
+                                mode: "inline"
+                            },
+                            scrollable: false,
+                            dataBound: onDataBound,
+                            columns: [
+                                {
+                                    field: "ID",
+                                    headerTemplate: "<input id='mastercheckbox' type='checkbox'/>",
+                                    headerAttributes: { style: "text-align:center" },
+                                    attributes: { style: "text-align:center" },
+                                    template: "<input type='checkbox' value='#=ID#' class='checkboxGroups'/>",
+                                    width: 50
+                                }, {
+                                    field: "SKU",
+                                    title: "SKU"
+                                }, {
+                                    field: "Title",
+                                    title: "Title"
+                                }, {
+                                    field: "Price",
+                                    title: "Price"
+                                }, {
+                                    field: "InventoryQty",
+                                    title: "Inventory Qty"
+                                }, {
+                                    field: "Status",
+                                    title: "Status"
+                                }, {
+                                    field: "Supplier",
+                                    title: "Supplier"
+                                }, {
+                                    field: "CreateTime",
+                                    title: "Create Time",
+                                    width: 150,
+                                    type: "date",
+                                    format: "{0:dd/MM/yyyy HH:mm:ss}"
+                                }, {
+                                    field: "CreateBy",
+                                    title: "Create By"
+                                }, {
+                                    field: "EditTime",
+                                    title: "Edit Time",
+                                    width: 150,
+                                    type: "date",
+                                    format: "{0:dd/MM/yyyy HH:mm:ss}"
+                                }, {
+                                    field: "EditBy",
+                                    title: "Edit By"
+                                }
+                            ]
+                        });
+                    });
+                </script>
+            </td>
+        </tr>
+    </table>
+    <script>
+    var selectedIds = [];
+
+    $(document).ready(function () {
+
+        //search button
+        //$('#btnSearch').click(function () {
+        //    //search
+        //    var grid = $('#item-grid').data('kendoGrid');
+        //    grid.dataSource.page(1);
+
+        //    return false;
+        //});
+
+        //clear all button
+        @*$('#btnClearAll').click(function () {
+
+            
+            $('#@Html.FieldIdFor(model => model.ShippingMethod)').val("0");
+            selectedIds = [];
+
+            var grid = $('#item-grid').data('kendoGrid');
+            grid.dataSource.page(1);
+
+            return false;
+        });*@
+
+
+        $('#mastercheckbox').click(function () {
+            //$('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
+            $('.checkboxGroups').each(function () {
+                if ($('#mastercheckbox').is(':checked')) {
+                    $(this).prop('checked', true);
+                }
+                else {
+                    $(this).prop('checked', false);
+                }
+                $(this).change();
+            });
+        });
+
+
+        //wire up checkboxes.
+        $('#item-grid').on('change', 'input[type=checkbox][id!=mastercheckbox]', function (e) {
+            //debugger;
+            var $check = $(this);
+            if ($check.prop('checked') == true) {
+                var checked = jQuery.inArray($check.val(), selectedIds);
+                if (checked == -1) {
+                    //add id to selectedIds.
+                    selectedIds.push($check.val());
+                }
+            }
+            else {
+                var checked = jQuery.inArray($check.val(), selectedIds);
+                if (checked > -1) {
+                    //remove id from selectedIds.
+                    selectedIds = $.grep(selectedIds, function (item, index) {
+                        return item != $check.val();
+                    });
+                }
+            }
+            //updateMasterCheckbox();
+        });
+
+
+
+    });
+
+    function additionalData() {
+        return {
+            
+        };
+    }
+
+    function onDataBound(e) {
+        $('#item-grid input[type=checkbox][id!=mastercheckbox]').each(function () {
+            //debugger;
+            var currentId = $(this).val();
+            var checked = jQuery.inArray(currentId, selectedIds);
+            //set checked based on if current checkbox's value is in selectedIds.
+            $(this).prop('checked', checked > -1);
+        });
+
+        updateMasterCheckbox();
+    }
+
+    function updateMasterCheckbox() {
+        //debugger;
+        var numChkBoxes = $('#item-grid input[type=checkbox][id!=mastercheckbox]').length;
+        var numChkBoxesChecked = $('#item-grid input[type=checkbox]:checked[id!=mastercheckbox]').length;
+        //var isChecked = false;
+        //if (numChkBoxes == numChkBoxesChecked && numChkBoxes > 0)
+        //    isChecked=true
+        $('#mastercheckbox').prop('checked', numChkBoxes == numChkBoxesChecked && numChkBoxes > 0);
+        //$('#mastercheckbox').prop('checked', isChecked);
+    }
+
+    function RefreshGrid(isBackCurrentPage) {
+        var grid = $('#item-grid').data('kendoGrid');
+        var currentPage = 1;
+        if (isBackCurrentPage)
+            currentPage = grid.dataSource.page();
+        grid.dataSource.page(currentPage);
+    }
+
+    </script>
+}

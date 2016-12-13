@@ -1,0 +1,137 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - My ASP.NET Application</title>
+    @*@Styles.Render("~/Content/css")*@
+    @Scripts.Render("~/bundles/modernizr")
+    @Scripts.Render("~/bundles/jquery")
+    @*@Scripts.Render("~/bundles/jqueryui")*@
+    @Scripts.Render("~/bundles/bootstrapjs")
+    @Styles.Render("~/bundles/bootstrapcss")
+    @Scripts.Render("~/bundles/kendojs")
+    @Styles.Render("~/bundles/kendocss")
+    @Scripts.Render("~/bundles/customjs")
+    @RenderSection("scripts", required: false)
+
+    <style type="text/css">
+        body {
+            padding-top: 20px;
+            padding-bottom: 40px;
+        }
+
+        /* Custom container */
+        .container-narrow {
+            margin: 0 auto;
+            max-width: 1170px;
+        }
+
+            .container-narrow > hr {
+                margin: 30px 0;
+            }
+
+        /* Main marketing message and sign up button */
+        .jumbotron {
+            margin: 60px 0;
+            text-align: center;
+        }
+
+            .jumbotron h1 {
+                font-size: 72px;
+                line-height: 1;
+            }
+
+            .jumbotron .btn {
+                font-size: 21px;
+                padding: 14px 24px;
+            }
+
+        /* Supporting marketing content */
+        .marketing {
+            margin: 60px 0;
+        }
+
+            .marketing p + h4 {
+                margin-top: 28px;
+            }
+
+        .top20 {
+            margin-top: 20px;
+        }
+    </style>
+
+</head>
+<body>
+    
+    @*<div class="navbar navbar-inverse navbar-fixed-top">
+        <div class="container">
+            <div class="navbar-header">
+                <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-collapse">
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </button>
+                @Html.ActionLink("Application name", "Index", "Home", new { area = "" }, new { @class = "navbar-brand" })
+            </div>
+            <div class="navbar-collapse collapse">
+                <ul class="nav navbar-nav">
+                    <li>@Html.ActionLink("Home", "Index", "Home")</li>
+                    <li>@Html.ActionLink("About", "About", "Home")</li>
+                    <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
+                </ul>
+                @Html.Partial("_LoginPartial")
+            </div>
+        </div>
+    </div>*@
+
+    <div class="container-narrow">
+        <div class="page-header" style="height:100px;">
+
+
+            <div class="pull-right">
+                @Html.Partial("_LoginPartial")
+            </div>
+            <div class="pull-right" style="clear:both;margin-top: 20px;">
+                <ul id="menu" class="nav nav-pills">
+                    @*<li>@Html.ActionLink("Send Out Order List","SendOutOrderLineList","DropShipSendOut")</li>*@
+                    @*<li class="@Url.MakeNavBarActive("DropShipSendOut")">@Html.ActionLink("Scan Orders & Send Out", "ScanSendOutOrder", "DropShipSendOut")</li>*@
+                    <li class="@Url.MakeNavBarActive("Item")">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            Item<span class="caret"></span>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    @Html.ActionLink("Item List", "List", "Item")
+                                </li>
+                            </ul>
+
+                        </a>
+                    </li>
+                    <li class="@Url.MakeNavBarActive("Listing")">
+                        <a class="dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true" aria-expanded="false">
+                            Listing<span class="caret"></span>
+                            <ul class="dropdown-menu">
+                                <li>
+                                    @Html.ActionLink("Listing List", "List", "Listing")
+                                </li>
+                            </ul>
+
+                        </a>
+                    </li>
+                </ul>
+
+            </div>
+            <h1>@Html.ActionLink(" ", "Index", "Home", null, new { style = "background-image:url(" + @Url.Content("~/Content/images/logo.gif") + ");width: 310px;height: 66px;display: block;background-repeat: no-repeat;" })</h1>
+        </div>
+
+        <div class="container body-content">
+            @RenderBody()
+            <hr />
+            <footer>
+                <p>&copy; @DateTime.Now.Year - My ASP.NET Application</p>
+            </footer>
+        </div>
+    </div>
+
+</body>
+</html>

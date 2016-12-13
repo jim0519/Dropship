@@ -1,0 +1,526 @@
+﻿@model ListingListViewModel
+@{
+    ViewBag.Title = "List";
+}
+
+<h2>List</h2>
+
+@using (Html.BeginForm())
+{
+   <div style="float:right">
+       @Html.LabelFor(model => model.ListingChannelID):  @Html.DropDownListFor(model => model.ListingChannelID,Model.AvailableListingChannels)
+   </div>
+    <div style="border-bottom: 1px dotted #998675;margin-top: 30px;margin-bottom: 10px;height: 35px;clear:both;">
+        <div style="float:left; font-size:x-large;color:brown;">Search Criteria</div>
+        
+        <div id="divOperationBtn" style="float:right">
+            
+            <input type="button" id="btnUpdateFieldByRule" class="k-button" value="Update Field By Rule" />
+            <input type="button" id="btnSyncLocalListing" class="k-button" value="Sync Local Listing" />
+            <input type="button" id="btnSyncOnlineListing" class="k-button" value="Sync Online Listing" />
+            <img id="imgLoading" src="~/Content/images/loading.gif" style="display:none;" />
+            <script>
+    $(document).ready(function () {
+        $("#panelbar").kendoPanelBar({
+            animation: {
+                collapse: {
+                    duration: 1000
+                }
+            }
+        });
+
+        $('#btnUpdateFieldByRule').click(function () {
+            var link = '@Url.Action("UpdateFieldByRule", "Listing")';
+            var selectedUpdateFields = [];
+            $('input[name="@Html.FieldNameFor(model => model.SelectedUpdateFields)"]').each(function () {
+                if ($(this).is(':checked'))
+                    selectedUpdateFields.push($(this).val());
+            });
+            var postData = {
+                ListingChannelID: $('#@Html.FieldIdFor(model => model.ListingChannelID)').val(),
+                SelectedUpdateFields: selectedUpdateFields
+            }
+            $.ajax({
+                url: link,
+                type: "POST",
+                //contentType: "application/json; charset=utf-8",
+                data: postData,
+                dataType: "json",
+                beforeSend: function () {
+                    $("#imgLoading").show();
+                },
+                complete: function () {
+                    $("#imgLoading").hide();
+                },
+                success: function (data) {
+                    if (data.Result) {
+                        alert("Update Local Listing Success");
+                        RefreshGrid(true);
+                    }
+                    else {
+                        alert("Update Local Listing Failed");
+                    }
+                },
+                error: function (data) {
+                    //debugger;
+                    alert("error");
+                }
+            });
+            return false;
+        });
+
+
+
+        $('#chkUpdateAll').click(function () {
+            //$('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
+            $('#panelbar input[type=checkbox][id!=chkUpdateAll]').each(function () {
+                if ($('#chkUpdateAll').is(':checked')) {
+                    $(this).prop('checked', true);
+                }
+                else {
+                    $(this).prop('checked', false);
+                }
+                $(this).change();
+            });
+        });
+
+        $('#btnSyncLocalListing').click(function (e) {
+            var link = '@Url.Action("SyncLocalListing", "Listing")';
+            var postData = {
+                ListingChannelID: $('#@Html.FieldIdFor(model => model.ListingChannelID)').val()
+            }
+            $.ajax({
+                url: link,
+                type: "POST",
+                //contentType: "application/json; charset=utf-8",
+                data: postData,
+                dataType: "json",
+                beforeSend: function () {
+                    $("#imgLoading").show();
+                },
+                complete: function () {
+                    $("#imgLoading").hide();
+                },
+                success: function (data) {
+                    if (data.Result) {
+                        alert("Sync Local Listing Success");
+                        RefreshGrid(true);
+                    }
+                    else {
+                        alert("Sync Local Listing Failed");
+                    }
+
+                },
+                error: function (data) {
+                    //debugger;
+                    alert("error");
+                }
+            });
+            return false;
+        });
+
+        $('#btnSyncOnlineListing').click(function () {
+            var link = '@Url.Action("SyncOnlineListing", "Listing")';
+            var selectedUpdateFields = [];
+            $('input[name="@Html.FieldNameFor(model => model.SelectedUpdateFields)"]').each(function () {
+                if ($(this).is(':checked'))
+                    selectedUpdateFields.push($(this).val());
+            });
+            var postData = {
+                ListingChannelID: $('#@Html.FieldIdFor(model => model.ListingChannelID)').val(),
+                SelectedUpdateFields: selectedUpdateFields
+            }
+            $.ajax({
+                url: link,
+                type: "POST",
+                //contentType: "application/json; charset=utf-8",
+                data: postData,
+                dataType: "json",
+                beforeSend: function () {
+                    $("#imgLoading").show();
+                },
+                complete: function () {
+                    $("#imgLoading").hide();
+                },
+                success: function (data) {
+                    if (data.Result) {
+                        alert("Sync Online Listing Success");
+                        RefreshGrid(true);
+                    }
+                    else {
+                        alert("Sync Online Listing Failed");
+                    }
+                },
+                error: function (data) {
+                    //debugger;
+                    alert("error");
+                }
+            });
+            return false;
+        });
+
+
+    });
+
+</script>
+
+        </div>
+        <ul id="panelbar" style="float:right">
+            <li>
+                Update Local Listing Fields
+                <ul>
+                    <li><input id="chkUpdateAll" type='checkbox' />Select All</li>
+                    @foreach (var prop in Model.AvailableUpdateFields)
+                    {
+                        <li><input type="checkbox" name="SelectedUpdateFields" value="@prop" />@prop</li>
+                    }
+                    
+                </ul>
+            </li>
+        </ul>
+    </div>
+
+    <table class="adminContent">
+        <tr>
+            <td>
+                <div id="listing-grid"></div>
+
+                <script>
+    $(document).ready(function () {
+        $("#listing-grid").kendoGrid({
+            dataSource: {
+                type: "json",
+                transport: {
+                            read: {
+                                url: "@Html.Raw(Url.Action("List", "Listing"))",
+                                type: "POST",
+                                dataType: "json",
+                                data: additionalData
+                            },
+                            update: {
+                                url:"@Html.Raw(Url.Action("ListingUpdate", "Listing"))",
+                                type: "POST",
+                                dataType: "json"
+                            },
+                            destroy: {
+                                url: "@Html.Raw(Url.Action("ListingDelete", "Listing"))",
+                                type: "POST",
+                                dataType: "json"
+                            }
+                        },
+                        schema: {
+                            data: "Data",
+                            total: "Total",
+                            errors: "Errors",
+                            model: {
+                                id: "ID",
+                                fields: {
+                                    ListingID: { editable: false, type: "string" },
+                                    ListingSKU: { editable: false, type: "string" },
+                                    ListingTitle: { editable: true, type: "string" },
+                                    ItemTitle: { editable: false, type: "string" },
+                                    ListingPrice: { editable: true, type: "number" },
+                                    ItemPrice: { editable: false, type: "number" },
+                                    ListingInventoryQty: { editable: true, type: "number" },
+                                    ItemInventoryQty: { editable: false, type: "number" },
+                                    ListingStatus: { editable: false, type: "string" },
+                                    ItemStatus: { editable: false, type: "string" },
+                                    LastUpdateTime: { editable: false, type: "date" },
+                                    ListingPostageRule: { editable: false, type: "string" },
+                                    ListingPriceRule: { editable: false, type: "string" },
+                                    ListingDescriptionTemplate: { editable: false, type: "string" },
+                                    Ref1: { editable: false, type: "string" },
+                                    Ref2: { editable: false, type: "string" },
+                                    Ref3: { editable: false, type: "string" },
+                                    Ref4: { editable: false, type: "string" },
+                                    Ref5: { editable: false, type: "string" },
+                                    CreateTime: { editable: false, type: "date" },
+                                    CreateBy: { editable: false, type: "string" },
+                                    EditTime: { editable: false, type: "date" },
+                                    EditBy: { editable: false, type: "string" },
+                                    ID: { editable: false, type: "number" }
+                                }
+                            }
+                        },
+                        requestEnd: function (e) {
+                            if (e.type == "create" || e.type == "update") {
+                                this.read();
+                            }
+                        },
+                        error: function (e) {
+                            display_kendoui_grid_error(e);
+                            // Cancel the changes
+                            this.cancelChanges();
+                        },
+                        pageSize: "50",
+                        serverPaging: true,
+                        serverFiltering: true,
+                        serverSorting: true
+                    },
+                    pageable: {
+                        refresh: true,
+                        pageSizes: ["20", "50", "100"]
+                    },
+                    editable: {
+                        confirmation: true,
+                        mode: "inline"
+                    },
+                    scrollable: false,
+                    dataBound: onDataBound,
+                    columns: [
+                        {
+                            field: "ID",
+                            headerTemplate: "<input id='mastercheckbox' type='checkbox'/>",
+                            headerAttributes: { style: "text-align:center" },
+                            attributes: { style: "text-align:center" },
+                            template: "<input type='checkbox' value='#=ID#' class='checkboxGroups'/>",
+                            width: 50
+                        }, {
+                            field: "ListingID",
+                            title: "Listing ID"
+                        }, {
+                            field: "ListingSKU",
+                            title: "SKU"
+                        }, {
+                            field: "ListingTitle",
+                            title: "Listing Title"
+                        }, {
+                            field: "ItemTitle",
+                            title: "Item Title"
+                        }, {
+                            field: "ListingPrice",
+                            title: "Listing Price"
+                        }, {
+                            field: "ItemPrice",
+                            title: "Item Price"
+                        }, {
+                            field: "ListingInventoryQty",
+                            title: "Listing Inventory Qty"
+                        }, {
+                            field: "ItemInventoryQty",
+                            title: "Item Inventory Qty"
+                        }, {
+                            field: "ListingStatus",
+                            title: "Listing Status"
+                        }, {
+                            field: "ItemStatus",
+                            title: "Item Status"
+                        }, {
+                            field: "LastUpdateTime",
+                            title: "Last Update Time",
+                            width: 150,
+                            format: "{0:dd/MM/yyyy HH:mm:ss}",
+                            type: "date"
+                            
+                        }, {
+                            command: [{
+                                name: "edit",
+                                text: "Edit"
+                            }, {
+                                name: "syncLocal",
+                                text: "Sync Local",
+                                click: function (e) {
+                                    e.preventDefault();
+                                    // get the row with the button
+                                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                                    var passData = {};
+                                    passData.ID = dataItem.ID;
+                                    passData.ListingID = dataItem.ListingID;
+                                    passData.ListingSKU = dataItem.ListingSKU;
+
+                                    var link = '@Url.Action("SyncLocal", "Listing")';
+                                    $.ajax({
+                                        url: link,
+                                        type: "POST",
+                                        //contentType: "application/json; charset=utf-8",
+                                        data: passData,
+                                        dataType: "json",
+                                        beforeSend: function () {
+                                                   
+                                        },
+                                        //complete: RefreshGrid(true),
+                                        success: function (data) {
+                                            if (data.Result) {
+                                                alert("Update Local Listing Success");
+                                            }
+                                            else {
+                                                alert("Update Local Listing Failed");
+                                            }
+                                            RefreshGrid(true);
+                                        },
+                                        error: function (data) {
+                                            //debugger;
+                                            alert("error");
+                                        }
+                                    });
+                                }
+                            }, {
+                                name: "syncOnline",
+                                text: "Sync Online",
+                                click: function (e) {
+                                    e.preventDefault();
+                                    // get the row with the button
+                                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+                                    var passData = {};
+                                    passData.ID = dataItem.ID;
+                                    passData.ListingID = dataItem.ListingID;
+                                    passData.ListingSKU = dataItem.ListingSKU;
+
+                                    var link = '@Url.Action("SyncOnline", "Listing")';
+                                    $.ajax({
+                                        url: link,
+                                        type: "POST",
+                                        //contentType: "application/json; charset=utf-8",
+                                        data: passData,
+                                        dataType: "json",
+                                        beforeSend: function () {
+                                                   
+                                        },
+                                        //complete: RefreshGrid(true)
+                                        //,
+                                        success: function (data) {
+                                            if (data.Result) {
+                                                alert("Update Online Listing Success");
+                                            }
+                                            else {
+                                                alert("Update Online Listing Failed");
+                                            }
+                                            RefreshGrid(true);
+                                        },
+                                        error: function (data) {
+                                            //debugger;
+                                            alert("error");
+                                        }
+                                    });
+                                }
+                            }, {
+                                name: "viewOnline",
+                                text: "View Online",
+                                click: function (e) {
+                                    e.preventDefault();
+                                    // get the row with the button
+                                    var dataItem = this.dataItem($(e.currentTarget).closest("tr"));
+
+                                    var link = 'http://www.ebay.com.au/itm/' + dataItem.ListingID;
+                                    OpenWindow(link, 800, 600, true);
+                                    return false;
+                                }
+                            }],
+                            width: 300
+                        }
+                    ]
+                });
+            });
+                </script>
+            </td>
+        </tr>
+    </table>
+    <script>
+    var selectedIds = [];
+
+    $(document).ready(function () {
+
+        //search button
+        //$('#btnSearch').click(function () {
+        //    //search
+        //    var grid = $('#item-grid').data('kendoGrid');
+        //    grid.dataSource.page(1);
+
+        //    return false;
+        //});
+
+        //clear all button
+        @*$('#btnClearAll').click(function () {
+
+
+            $('#@Html.FieldIdFor(model => model.ShippingMethod)').val("0");
+            selectedIds = [];
+
+            var grid = $('#item-grid').data('kendoGrid');
+            grid.dataSource.page(1);
+
+            return false;
+        });*@
+
+
+        $('#mastercheckbox').click(function () {
+            //$('.checkboxGroups').attr('checked', $(this).is(':checked')).change();
+            $('.checkboxGroups').each(function () {
+                if ($('#mastercheckbox').is(':checked')) {
+                    $(this).prop('checked', true);
+                }
+                else {
+                    $(this).prop('checked', false);
+                }
+                $(this).change();
+            });
+        });
+
+
+        //wire up checkboxes.
+        $('#listing-grid').on('change', 'input[type=checkbox][id!=mastercheckbox]', function (e) {
+            //debugger;
+            var $check = $(this);
+            if ($check.prop('checked') == true) {
+                var checked = jQuery.inArray($check.val(), selectedIds);
+                if (checked == -1) {
+                    //add id to selectedIds.
+                    selectedIds.push($check.val());
+                }
+            }
+            else {
+                var checked = jQuery.inArray($check.val(), selectedIds);
+                if (checked > -1) {
+                    //remove id from selectedIds.
+                    selectedIds = $.grep(selectedIds, function (item, index) {
+                        return item != $check.val();
+                    });
+                }
+            }
+            //updateMasterCheckbox();
+        });
+
+
+
+    });
+
+    function additionalData() {
+        return {
+            ListingChannelID: $('#@Html.FieldIdFor(model => model.ListingChannelID)').val()
+        };
+    }
+
+    function RefreshGrid(isBackCurrentPage)
+    {
+        var grid = $('#listing-grid').data('kendoGrid');
+        var currentPage = 1;
+        if (isBackCurrentPage)
+            currentPage=grid.dataSource.page();
+        grid.dataSource.page(currentPage);
+    }
+
+    function onDataBound(e) {
+        $('#listing-grid input[type=checkbox][id!=mastercheckbox]').each(function () {
+            //debugger;
+            var currentId = $(this).val();
+            var checked = jQuery.inArray(currentId, selectedIds);
+            //set checked based on if current checkbox's value is in selectedIds.
+            $(this).prop('checked', checked > -1);
+        });
+
+        updateMasterCheckbox();
+    }
+
+    function updateMasterCheckbox() {
+        //debugger;
+        var numChkBoxes = $('#listing-grid input[type=checkbox][id!=mastercheckbox]').length;
+        var numChkBoxesChecked = $('#listing-grid input[type=checkbox]:checked[id!=mastercheckbox]').length;
+        //var isChecked = false;
+        //if (numChkBoxes == numChkBoxesChecked && numChkBoxes > 0)
+        //    isChecked=true
+        $('#mastercheckbox').prop('checked', numChkBoxes == numChkBoxesChecked && numChkBoxes > 0);
+        //$('#mastercheckbox').prop('checked', isChecked);
+    }
+
+    </script>
+}
