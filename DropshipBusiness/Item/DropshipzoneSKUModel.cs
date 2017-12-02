@@ -37,6 +37,13 @@ namespace DropshipBusiness.Item
         public string Height { get; set; }
         //[CsvColumn(Name = "images")]
         //public string Images { get; set; }
+        public string RrpPrice { get; set; }
+        public string Category { get; set; }
+        public string Discontinued { get; set; }
+        [CsvColumn(Name = "EAN Code")]
+        public string EANCode { get; set; }
+        public string Brand { get; set; }
+        public string MPN { get; set; }
 
         [CsvColumn(Name = "Image 1")]
         public string Image1 { get; set; }

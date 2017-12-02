@@ -53,6 +53,10 @@ namespace Nop.Plugin.Widgets.NivoSlider.Infrastructure.Cache
         {
             var listing = eventMessage.Entity;
             var descHtmlDoc = new HtmlDocument();
+            if (listing.ListingDescription.IndexOf("dealsplash") != -1)
+            {
+                listing.ListingDescription = listing.ListingDescription.Replace("dealsplash", "ozcrazymall");
+            }
             descHtmlDoc.LoadHtml(listing.ListingDescription);
 
             //update shipping & delivery

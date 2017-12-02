@@ -597,3 +597,51 @@ REFERENCES [dbo].[T_Permission] ([ID])
 ON UPDATE CASCADE
 ON DELETE CASCADE
 GO
+
+
+
+
+
+--Add Ref6
+IF NOT EXISTS (SELECT * FROM SysObjects O INNER JOIN SysColumns C ON O.ID=C.ID WHERE
+ ObjectProperty(O.ID,'IsUserTable')=1 AND O.Name='D_Item' AND C.Name='Ref6')
+	ALTER TABLE dbo.D_Item ADD
+		Ref6 varchar(4000) NOT NULL CONSTRAINT DF_D_Item_Ref6 DEFAULT ''
+GO
+
+--Add Ref7
+IF NOT EXISTS (SELECT * FROM SysObjects O INNER JOIN SysColumns C ON O.ID=C.ID WHERE
+ ObjectProperty(O.ID,'IsUserTable')=1 AND O.Name='D_Item' AND C.Name='Ref7')
+	ALTER TABLE dbo.D_Item ADD
+		Ref7 varchar(4000) NOT NULL CONSTRAINT DF_D_Item_Ref7 DEFAULT ''
+GO
+
+--Add Ref8
+IF NOT EXISTS (SELECT * FROM SysObjects O INNER JOIN SysColumns C ON O.ID=C.ID WHERE
+ ObjectProperty(O.ID,'IsUserTable')=1 AND O.Name='D_Item' AND C.Name='Ref8')
+	ALTER TABLE dbo.D_Item ADD
+		Ref8 varchar(4000) NOT NULL CONSTRAINT DF_D_Item_Ref8 DEFAULT ''
+GO
+
+--Add Ref9
+IF NOT EXISTS (SELECT * FROM SysObjects O INNER JOIN SysColumns C ON O.ID=C.ID WHERE
+ ObjectProperty(O.ID,'IsUserTable')=1 AND O.Name='D_Item' AND C.Name='Ref9')
+	ALTER TABLE dbo.D_Item ADD
+		Ref9 varchar(4000) NOT NULL CONSTRAINT DF_D_Item_Ref9 DEFAULT ''
+GO
+
+--Add Ref10
+IF NOT EXISTS (SELECT * FROM SysObjects O INNER JOIN SysColumns C ON O.ID=C.ID WHERE
+ ObjectProperty(O.ID,'IsUserTable')=1 AND O.Name='D_Item' AND C.Name='Ref10')
+	ALTER TABLE dbo.D_Item ADD
+		Ref10 varchar(4000) NOT NULL CONSTRAINT DF_D_Item_Ref10 DEFAULT ''
+GO
+
+--Add Ref11
+IF NOT EXISTS (SELECT * FROM SysObjects O INNER JOIN SysColumns C ON O.ID=C.ID WHERE
+ ObjectProperty(O.ID,'IsUserTable')=1 AND O.Name='D_Item' AND C.Name='Ref11')
+	ALTER TABLE dbo.D_Item ADD
+		Ref11 varchar(4000) NOT NULL CONSTRAINT DF_D_Item_Ref11 DEFAULT ''
+GO
+
+

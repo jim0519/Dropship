@@ -64,6 +64,12 @@ namespace DropshipBusiness.Item
                                          sl.Price,
                                          sl.Description,
                                          sl.IsBulkyItem,
+                                         sl.RrpPrice,
+                                         sl.Category,
+                                         sl.Discontinued,
+                                         sl.EANCode,
+                                         sl.Brand,
+                                         sl.MPN,
                                          sl.Weight,
                                          sl.Length,
                                          sl.Width,
@@ -105,9 +111,15 @@ namespace DropshipBusiness.Item
                     item.Ref3 = updateItem.Length;
                     item.Ref4 = updateItem.Width;
                     item.Ref5 = updateItem.Height;
+                    item.Ref6 = updateItem.RrpPrice;
+                    item.Ref7 = updateItem.Category;
+                    item.Ref8 = updateItem.Discontinued;
+                    item.Ref9 = updateItem.EANCode;
+                    item.Ref10 = updateItem.Brand;
+                    item.Ref11 = updateItem.MPN;
                     item.StatusID = 1;//TODO Get item active status id
 
-                    
+                    //TODO: Redownload images if images changed
 
 
                     //postage rule
@@ -180,147 +192,160 @@ namespace DropshipBusiness.Item
                 
                 foreach (var additem in addItemList)
                 {
-                    var newItem = new D_Item();
-                    newItem.SKU = additem.SKU;
-                    newItem.Title = additem.Title;
-                    newItem.Price = additem.Price;
-                    newItem.InventoryQty = additem.InventoryQty;
-                    newItem.Description = additem.Description;
-                    newItem.StatusID = 1;//TODO Get item active status id
-                    newItem.SupplierID = 1;//TODO Get Dropshipzone supplier id
-                    newItem.Ref1 = additem.IsBulkyItem;
-                    newItem.Ref2 = additem.Weight;
-                    newItem.Ref3 = additem.Length;
-                    newItem.Ref4 = additem.Width;
-                    newItem.Ref5 = additem.Height;
-                    newItem.CreateTime = createTime;
-                    newItem.CreateBy = createBy;
-                    newItem.EditTime = createTime;
-                    newItem.EditBy = createBy;
-                    newItem.FillOutNull();
+                    try
+                    {
 
-                    //images
-                    //var imagesURL = additem.Images.Split(';');
-                    var imagesURL = new List<string>();
-                    if (!string.IsNullOrEmpty(additem.Image1))
-                        imagesURL.Add(additem.Image1);
-                    if (!string.IsNullOrEmpty(additem.Image2))
-                        imagesURL.Add(additem.Image2);
-                    if (!string.IsNullOrEmpty(additem.Image3))
-                        imagesURL.Add(additem.Image3);
-                    if (!string.IsNullOrEmpty(additem.Image4))
-                        imagesURL.Add(additem.Image4);
-                    if (!string.IsNullOrEmpty(additem.Image5))
-                        imagesURL.Add(additem.Image5);
-                    if (!string.IsNullOrEmpty(additem.Image6))
-                        imagesURL.Add(additem.Image6);
-                    if (!string.IsNullOrEmpty(additem.Image7))
-                        imagesURL.Add(additem.Image7);
-                    if (!string.IsNullOrEmpty(additem.Image8))
-                        imagesURL.Add(additem.Image8);
-                    if (!string.IsNullOrEmpty(additem.Image9))
-                        imagesURL.Add(additem.Image9);
-                    if (!string.IsNullOrEmpty(additem.Image10))
-                        imagesURL.Add(additem.Image10);
-                    if (!string.IsNullOrEmpty(additem.Image11))
-                        imagesURL.Add(additem.Image11);
-                    if (!string.IsNullOrEmpty(additem.Image12))
-                        imagesURL.Add(additem.Image12);
-                    if (!string.IsNullOrEmpty(additem.Image13))
-                        imagesURL.Add(additem.Image13);
-                    if (!string.IsNullOrEmpty(additem.Image14))
-                        imagesURL.Add(additem.Image14);
-                    if (!string.IsNullOrEmpty(additem.Image15))
-                        imagesURL.Add(additem.Image15);
-                    int i = 0;
-                    DirectoryInfo di = new DirectoryInfo(DropshipConfig.Instance.ImageFilesPath + additem.SKU + "\\");
-                    if (!di.Exists)
-                    {
-                        di.Create();
-                    }
-                    using (var wc = new DropshipWebClient())
-                    {
-                        foreach (var imageURL in imagesURL)
+                        var newItem = new D_Item();
+                        newItem.SKU = additem.SKU;
+                        newItem.Title = additem.Title;
+                        newItem.Price = additem.Price;
+                        newItem.InventoryQty = additem.InventoryQty;
+                        newItem.Description = additem.Description;
+                        newItem.StatusID = 1;//TODO Get item active status id
+                        newItem.SupplierID = 1;//TODO Get Dropshipzone supplier id
+                        newItem.Ref1 = additem.IsBulkyItem;
+                        newItem.Ref2 = additem.Weight;
+                        newItem.Ref3 = additem.Length;
+                        newItem.Ref4 = additem.Width;
+                        newItem.Ref5 = additem.Height;
+                        newItem.Ref6 = additem.RrpPrice;
+                        newItem.Ref7 = additem.Category;
+                        newItem.Ref8 = additem.Discontinued;
+                        newItem.Ref9 = additem.EANCode;
+                        newItem.Ref10 = additem.Brand;
+                        newItem.Ref11 = additem.MPN;
+                        newItem.CreateTime = createTime;
+                        newItem.CreateBy = createBy;
+                        newItem.EditTime = createTime;
+                        newItem.EditBy = createBy;
+                        newItem.FillOutNull();
+
+                        //images
+                        //var imagesURL = additem.Images.Split(';');
+                        var imagesURL = new List<string>();
+                        if (!string.IsNullOrEmpty(additem.Image1))
+                            imagesURL.Add(additem.Image1);
+                        if (!string.IsNullOrEmpty(additem.Image2))
+                            imagesURL.Add(additem.Image2);
+                        if (!string.IsNullOrEmpty(additem.Image3))
+                            imagesURL.Add(additem.Image3);
+                        if (!string.IsNullOrEmpty(additem.Image4))
+                            imagesURL.Add(additem.Image4);
+                        if (!string.IsNullOrEmpty(additem.Image5))
+                            imagesURL.Add(additem.Image5);
+                        if (!string.IsNullOrEmpty(additem.Image6))
+                            imagesURL.Add(additem.Image6);
+                        if (!string.IsNullOrEmpty(additem.Image7))
+                            imagesURL.Add(additem.Image7);
+                        if (!string.IsNullOrEmpty(additem.Image8))
+                            imagesURL.Add(additem.Image8);
+                        if (!string.IsNullOrEmpty(additem.Image9))
+                            imagesURL.Add(additem.Image9);
+                        if (!string.IsNullOrEmpty(additem.Image10))
+                            imagesURL.Add(additem.Image10);
+                        if (!string.IsNullOrEmpty(additem.Image11))
+                            imagesURL.Add(additem.Image11);
+                        if (!string.IsNullOrEmpty(additem.Image12))
+                            imagesURL.Add(additem.Image12);
+                        if (!string.IsNullOrEmpty(additem.Image13))
+                            imagesURL.Add(additem.Image13);
+                        if (!string.IsNullOrEmpty(additem.Image14))
+                            imagesURL.Add(additem.Image14);
+                        if (!string.IsNullOrEmpty(additem.Image15))
+                            imagesURL.Add(additem.Image15);
+                        int i = 0;
+                        DirectoryInfo di = new DirectoryInfo(DropshipConfig.Instance.ImageFilesPath + additem.SKU + "\\");
+                        if (!di.Exists)
                         {
-                            try
+                            di.Create();
+                        }
+                        using (var wc = new DropshipWebClient())
+                        {
+                            foreach (var imageURL in imagesURL)
                             {
-                                var imageFileName = CommonFunc.GetImageFileName(additem.SKU, i);
-                                var saveImageFileFullName = Path.Combine(di.FullName, imageFileName);
-
-                                wc.DownloadFile(imageURL, saveImageFileFullName);
-
-                                newItem.ItemImages.Add(new M_ItemImage()
+                                try
                                 {
-                                    Image = _imageService.InsertImage(new D_Image()
+                                    var imageFileName = CommonFunc.GetImageFileName(additem.SKU, i);
+                                    var saveImageFileFullName = Path.Combine(di.FullName, imageFileName);
+
+                                    wc.DownloadFile(imageURL, saveImageFileFullName);
+
+                                    newItem.ItemImages.Add(new M_ItemImage()
                                     {
-                                        ImagePath = additem.SKU + "\\" + imageFileName,
+                                        Image = _imageService.InsertImage(new D_Image()
+                                        {
+                                            ImagePath = additem.SKU + "\\" + imageFileName,
+                                            CreateTime = createTime,
+                                            CreateBy = createBy,
+                                            EditTime = createTime,
+                                            EditBy = createBy
+                                        }),
+                                        DisplayOrder = i + 1,
+                                        StatusID = 5,//TODO Get item active status id
                                         CreateTime = createTime,
                                         CreateBy = createBy,
                                         EditTime = createTime,
                                         EditBy = createBy
-                                    }),
-                                    DisplayOrder = i + 1,
-                                    StatusID = 5,//TODO Get item active status id
-                                    CreateTime = createTime,
-                                    CreateBy = createBy,
-                                    EditTime = createTime,
-                                    EditBy = createBy
-                                });
-                            }
-                            catch (Exception ex)
-                            {
-                                LogManager.Instance.Error(imageURL+" download failed. "+ex.Message);
-                            }
+                                    });
+                                }
+                                catch (Exception ex)
+                                {
+                                    LogManager.Instance.Error(imageURL + " download failed. " + ex.Message);
+                                }
 
-                            i++;
+                                i++;
+                            }
                         }
+
+                        //postage rule
+                        var postageRuleName = additem.nameof(n => n.VIC) + ":" + additem.VIC + ";" +
+                            additem.nameof(n => n.NSW) + ":" + additem.NSW + ";" +
+                            additem.nameof(n => n.SA) + ":" + additem.SA + ";" +
+                            additem.nameof(n => n.QLD) + ":" + additem.QLD + ";" +
+                            additem.nameof(n => n.TAS) + ":" + additem.TAS + ";" +
+                            additem.nameof(n => n.WA) + ":" + additem.WA + ";" +
+                            additem.nameof(n => n.NT) + ":" + additem.NT;
+
+                        var existingRule = _postageRuleService.GetPostageRuleByName(postageRuleName);
+                        if (existingRule == null)
+                        {
+                            var newRule = new T_PostageRule();
+                            newRule.Name = postageRuleName;
+                            newRule.Description = postageRuleName;
+                            newRule.CreateTime = createTime;
+                            newRule.CreateBy = createBy;
+                            newRule.EditTime = createTime;
+                            newRule.EditBy = createBy;
+
+                            newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "3000", PostcodeTo = "3999", Formula = additem.VIC, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
+                            newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "8000", PostcodeTo = "8999", Formula = additem.VIC, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
+
+                            newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "0200", PostcodeTo = "0299", Formula = additem.NSW, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
+                            newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "1000", PostcodeTo = "2999", Formula = additem.NSW, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
+
+                            newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "5000", PostcodeTo = "5999", Formula = additem.SA, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
+
+                            newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "4000", PostcodeTo = "4999", Formula = additem.QLD, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
+                            newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "9000", PostcodeTo = "9999", Formula = additem.QLD, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
+
+                            newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "7000", PostcodeTo = "7999", Formula = additem.TAS, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
+
+                            newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "6000", PostcodeTo = "6797", Formula = additem.WA, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
+                            newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "6800", PostcodeTo = "6999", Formula = additem.WA, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
+
+                            newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "0800", PostcodeTo = "0999", Formula = additem.NT, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
+
+                            existingRule = _postageRuleService.InsertPostageRule(newRule);
+                        }
+
+                        newItem.PostageRuleID = existingRule.ID;
+
+                        _itemRepository.Insert(newItem);
                     }
-
-                    //postage rule
-                    var postageRuleName = additem.nameof(n => n.VIC) + ":" + additem.VIC + ";" +
-                        additem.nameof(n => n.NSW) + ":" + additem.NSW + ";" +
-                        additem.nameof(n => n.SA) + ":" + additem.SA + ";" +
-                        additem.nameof(n => n.QLD) + ":" + additem.QLD + ";" +
-                        additem.nameof(n => n.TAS) + ":" + additem.TAS + ";" +
-                        additem.nameof(n => n.WA) + ":" + additem.WA + ";" +
-                        additem.nameof(n => n.NT) + ":" + additem.NT;
-
-                    var existingRule = _postageRuleService.GetPostageRuleByName(postageRuleName);
-                    if (existingRule == null)
+                    catch (Exception ex)
                     {
-                        var newRule = new T_PostageRule();
-                        newRule.Name = postageRuleName;
-                        newRule.Description = postageRuleName;
-                        newRule.CreateTime = createTime;
-                        newRule.CreateBy = createBy;
-                        newRule.EditTime = createTime;
-                        newRule.EditBy = createBy;
-
-                        newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "3000", PostcodeTo = "3999", Formula = additem.VIC, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
-                        newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "8000", PostcodeTo = "8999", Formula = additem.VIC, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
-
-                        newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "0200", PostcodeTo = "0299", Formula = additem.NSW, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
-                        newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "1000", PostcodeTo = "2999", Formula = additem.NSW, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
-
-                        newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "5000", PostcodeTo = "5999", Formula = additem.SA, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
-
-                        newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "4000", PostcodeTo = "4999", Formula = additem.QLD, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
-                        newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "9000", PostcodeTo = "9999", Formula = additem.QLD, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
-
-                        newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "7000", PostcodeTo = "7999", Formula = additem.TAS, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
-
-                        newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "6000", PostcodeTo = "6797", Formula = additem.WA, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
-                        newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "6800", PostcodeTo = "6999", Formula = additem.WA, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
-
-                        newRule.T_PostageRuleLine.Add(new T_PostageRuleLine() { PostcodeFrom = "0800", PostcodeTo = "0999", Formula = additem.NT, CreateTime = createTime, CreateBy = createBy, EditTime = createTime, EditBy = createBy });
-
-                        existingRule = _postageRuleService.InsertPostageRule(newRule);
+                        LogManager.Instance.Error(ex.Message);
                     }
-
-                    newItem.PostageRuleID = existingRule.ID;
-
-                    _itemRepository.Insert(newItem);
-
                 }
 
 
