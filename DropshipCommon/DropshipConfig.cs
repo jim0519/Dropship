@@ -50,7 +50,8 @@ namespace DropshipCommon
         {
             get
             {
-                return HttpContext.Current.Server.MapPath("~/Content/ItemImages/");
+                //return HttpContext.Current.Server.MapPath("~/Content/ItemImages/");
+                return ConfigurationManager.AppSettings["ImageFilesPath"];
             }
         }
 

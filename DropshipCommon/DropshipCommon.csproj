@@ -109,6 +109,7 @@
     <Compile Include="Models\T_ListingDescriptionTemplate.cs" />
     <Compile Include="Models\T_PostageRule.cs" />
     <Compile Include="Models\T_PostageRuleLine.cs" />
+    <Compile Include="Models\T_Setting.cs" />
     <Compile Include="Models\T_Status.cs" />
     <Compile Include="Models\T_Role.cs" />
     <Compile Include="Models\T_Permission.cs" />

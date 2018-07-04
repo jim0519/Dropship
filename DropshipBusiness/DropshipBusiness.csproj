@@ -100,6 +100,7 @@
     <Compile Include="Events\IEventPublisher.cs" />
     <Compile Include="Events\ISubscriptionService.cs" />
     <Compile Include="Events\SubscriptionService.cs" />
+    <Compile Include="Item\ItemSetting.cs" />
     <Compile Include="Item\IImageService.cs" />
     <Compile Include="Item\IItemService.cs" />
     <Compile Include="Item\DropshipzoneSKUModel.cs" />
@@ -113,6 +114,8 @@
     <Compile Include="Security\IEncryptionService.cs" />
     <Compile Include="Security\IPermissionService.cs" />
     <Compile Include="Security\PermissionService.cs" />
+    <Compile Include="Setting\ISettingService.cs" />
+    <Compile Include="Setting\SettingService.cs" />
     <Compile Include="User\IUserService.cs" />
     <Compile Include="User\UserService.cs" />
   </ItemGroup>
@@ -130,6 +133,7 @@
       <Name>DropshipData</Name>
     </ProjectReference>
   </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.

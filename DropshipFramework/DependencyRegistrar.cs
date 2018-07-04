@@ -21,6 +21,7 @@ using DropshipBusiness.User;
 using DropshipBusiness.Security;
 using DropshipFramework;
 using DropshipBusiness.Events;
+using DropshipBusiness.Setting;
 //using DropshipBusiness.Task;
 //using DropshipBusiness.eBay;
 //using DropshipBusiness.ExportImport;
@@ -108,6 +109,9 @@ namespace DropshipData
 
             //Dropship Framework
             builder.RegisterType<WebWorkContext>().As<IWorkContext>().InstancePerLifetimeScope();
+
+            //Settings
+            builder.RegisterType<SettingService>().As<ISettingService>().InstancePerLifetimeScope();
 
             //Import/Export Manager
             //builder.RegisterType<ExportManager>().As<IExportManager>().InstancePerLifetimeScope();

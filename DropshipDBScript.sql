@@ -645,3 +645,37 @@ IF NOT EXISTS (SELECT * FROM SysObjects O INNER JOIN SysColumns C ON O.ID=C.ID W
 GO
 
 
+
+IF  EXISTS (SELECT * FROM sys.objects WHERE object_id = OBJECT_ID(N'[dbo].[T_Setting]') AND type in (N'U'))
+DROP TABLE [dbo].[T_Setting]
+GO
+CREATE TABLE [dbo].[T_Setting](
+	[ID] [int] IDENTITY(1,1) NOT NULL,
+	[Name] [varchar](4000) NOT NULL,
+	[Description] [varchar](4000) NOT NULL,
+	[Value] [varchar](4000) NOT NULL,
+	[CreateTime] datetime not null,
+	[CreateBy] [varchar](4000) not null,
+	[EditTime] datetime not null,
+	[EditBy] [varchar](4000) not null,
+
+ CONSTRAINT [PK_T_Setting] PRIMARY KEY CLUSTERED 
+(
+	[ID] ASC
+)WITH (PAD_INDEX  = OFF, STATISTICS_NORECOMPUTE  = OFF, IGNORE_DUP_KEY = OFF, ALLOW_ROW_LOCKS  = ON, ALLOW_PAGE_LOCKS  = ON) ON [PRIMARY]
+) ON [PRIMARY]
+GO
+
+insert into T_Setting
+select 
+'ItemSettings.ReDownloadImage' as Name,
+'Set if re-download images' as Description,
+'True' as Value,
+GETDATE(),'System',GETDATE(),'System'
+
+insert into T_Setting
+select 
+'ItemSettings.IgnoreSKUStartList' as Name,
+'Set all the sku ignore starting character' as Description,
+'VOF-,TRUG-,D8-,MAP-,V13-,V37-,V48-,V40-,V28-,V38-,V41-,V54-,V56-,V31-,V59-,V62-,V70-,V76-,V55-,V1-,V58-,V63-,V92-,V77-,V43-,V80-,V82-,V55-,V88-,V81-' as Value,
+GETDATE(),'System',GETDATE(),'System'

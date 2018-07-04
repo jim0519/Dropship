@@ -59,7 +59,8 @@ namespace DropshipData
             modelBuilder.Configurations.Add(new T_ValueRuleLineMap());
             modelBuilder.Configurations.Add(new T_UserMap());
             modelBuilder.Configurations.Add(new T_StatusMap());
-            
+            modelBuilder.Configurations.Add(new T_SettingMap());
+
             base.OnModelCreating(modelBuilder);
         }
 

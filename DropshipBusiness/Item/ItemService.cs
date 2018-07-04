@@ -9,6 +9,7 @@ using DropshipCommon;
 using System.IO;
 using LINQtoCSV;
 using DropshipBusiness.Common;
+using DropshipBusiness.Setting;
 
 namespace DropshipBusiness.Item
 {
@@ -17,14 +18,20 @@ namespace DropshipBusiness.Item
         private readonly IRepository<D_Item> _itemRepository;
         private readonly IImageService _imageService;
         private readonly IPostageRuleService _postageRuleService;
+        private readonly ISettingService _settingService;
+        private readonly ItemSettings _itemSettings;
 
         public ItemService(IRepository<D_Item> itemRepository,
             IImageService imageService,
-            IPostageRuleService postageRuleService)
+            IPostageRuleService postageRuleService,
+            ISettingService settingService
+            )
         {
             _itemRepository = itemRepository;
             _imageService = imageService;
             _postageRuleService = postageRuleService;
+            _settingService = settingService;
+            _itemSettings = _settingService.LoadSetting<ItemSettings>();
         }
 
         public IList<D_Item> GetAllItems()
@@ -103,7 +110,7 @@ namespace DropshipBusiness.Item
                 {
                     var item = localItemList.FirstOrDefault(li => li.ID == updateItem.ID);
                     item.Title = updateItem.Title;
-                    item.Description = updateItem.Description;
+                    item.Description = updateItem.Description.StripHTML();
                     item.InventoryQty = updateItem.InventoryQty;
                     item.Price = updateItem.Price;
                     item.Ref1 = updateItem.IsBulkyItem;
@@ -120,7 +127,11 @@ namespace DropshipBusiness.Item
                     item.StatusID = 1;//TODO Get item active status id
 
                     //TODO: Redownload images if images changed
-
+                    if(_itemSettings.ReDownloadImage)
+                    {
+                        //item.ItemImages.ToList().ForEach(im => _imageService.DeleteImage(im.Image));
+                        //DownloadNewImages();
+                    }
 
                     //postage rule
                     var postageRuleName = updateItem.nameof(n => n.VIC) + ":" + updateItem.VIC + ";" +
@@ -593,7 +604,7 @@ namespace DropshipBusiness.Item
                     }
                 }
             }
-
+            skuList = skuList.Where(s => !s.SKU.Contains("*")).ToList();
             return skuList;
         }
 

@@ -60,6 +60,7 @@
     <Compile Include="Mapping\T_PostageRuleLineMap.cs" />
     <Compile Include="Mapping\T_PostageRuleMap.cs" />
     <Compile Include="Mapping\T_StatusMap.cs" />
+    <Compile Include="Mapping\T_SettingMap.cs" />
     <Compile Include="Mapping\T_UserMap.cs" />
     <Compile Include="Mapping\T_SupplierMap.cs" />
     <Compile Include="Mapping\T_ValueRuleLineMap.cs" />
